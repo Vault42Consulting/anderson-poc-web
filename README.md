@@ -17,3 +17,9 @@ Try to keep react elements in `assets/react/` as frontend APIs will still be bui
 ## Routing
 
 Routing is accomplished using `react-router`. React will happily change the URL client side but if someone refreshes that page if we don't have Symfony routing for it the user will receive 404 ATM.
+
+## Authentication
+
+This project is setup to validate GCP IAP JWT Tokens. Any controllers that require their actions to validate that token must implement `App\Controller\IAPTokenAuthenticatedController` as a tagging mechanism.
+
+`JWKS_URI` needs to be set and `JWKS_VALIDATION_ENABLED` needs to be truthy to enable it.
