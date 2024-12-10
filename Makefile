@@ -4,10 +4,12 @@ dev:
 	asdf plugin add php
 	asdf install
 	wget https://get.symfony.com/cli/installer -O - | bash
+	composer install
 	npm i
 
-make encore:
-	npm run dev-server
-
-make symfony:
+make symfony:s
 	symfony serve
+
+# This will have to build the docker container in the long run
+make build:
+	npm run build
