@@ -7,7 +7,7 @@ dev:
 	composer install
 	npm i
 
-make symfony:s
+make symfony:
 	symfony serve
 
 # This will have to build the docker container in the long run
