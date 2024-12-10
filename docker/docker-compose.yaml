@@ -1,0 +1,10 @@
+services:
+  app:
+    environment:
+      - PORT=8080
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    image: anderson-poc-web-docker
+    ports:
+      - 8998:8080
