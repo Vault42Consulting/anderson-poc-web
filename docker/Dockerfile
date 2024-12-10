@@ -4,13 +4,12 @@ ENV APP_ENV=prod
 WORKDIR /app/
 COPY composer.json composer.lock /app/
 RUN composer install --no-scripts --no-autoloader \
-  && composer dump-autoload --optimize
+  && composer dump-autoload --optimize && composer dump-env prod --empty
 
 
 ############
 # Frontend #
 ############
-# Frontend code builder
 FROM node:23-alpine AS frontend-build
 
 WORKDIR /application
@@ -28,6 +27,11 @@ COPY tsconfig.json ./
 RUN ./node_modules/.bin/encore production
 
 FROM php:8.4-apache
+
+ARG DATABASE_URL
+ARG PORT
+ENV DATABASE_URL $DATABASE_URL
+ENV PORT $PORT
 
 # Configure PHP for Cloud Run.
 # Precompile PHP code with opcache.
@@ -51,6 +55,7 @@ WORKDIR /var/www
 
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY --from=build /app/vendor /var/www/vendor
+COPY --from=build /app/.env.local.php /var/www/.env.local.php
 COPY --chown=www-data:www-data . /var/www/
 COPY --chown=www-data:www-data --from=frontend-build           /application/public/build  /var/www/public/build
 

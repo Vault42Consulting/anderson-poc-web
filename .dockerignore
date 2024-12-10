@@ -5,6 +5,9 @@
 # Exclude locally vendored dependencies.
 vendor/
 
+# Exclude all .env. We'll configure this in CloudRun
+.env*
+
 # Exclude "build-time" ignore files.
 .dockerignore
 .gcloudignore
