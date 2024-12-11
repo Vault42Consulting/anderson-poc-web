@@ -1,4 +1,0 @@
-# .symfony.local.yaml
-workers:
-    npm_encore_watch:
-      cmd: ['npx', 'encore', 'dev', '--watch']

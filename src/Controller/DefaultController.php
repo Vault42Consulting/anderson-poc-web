@@ -13,6 +13,6 @@ class DefaultController extends AbstractController implements IAPTokenAuthentica
     #[Route('/', name: 'app_default')]
     public function index(): Response
     {
-        return $this->render('base.html.twig');
+        return $this->render('default/index.html.twig');
     }
 }

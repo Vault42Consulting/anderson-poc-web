@@ -7,6 +7,9 @@ dev:
 	composer install
 	npm i
 
+encore:
+	npm run dev-server
+
 symfony:
 	symfony serve
 
