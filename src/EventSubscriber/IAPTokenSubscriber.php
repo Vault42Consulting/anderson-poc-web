@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 use Firebase\JWT\CachedKeySet;
 use Firebase\JWT\JWT;
 use InvalidArgumentException;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class IAPTokenSubscriber implements EventSubscriberInterface
 {
@@ -27,7 +26,9 @@ class IAPTokenSubscriber implements EventSubscriberInterface
   public function __construct(
     private string $jwksUri,
     private bool $enabled,
-    private LoggerInterface $logger
+    private LoggerInterface $logger,
+    private GuzzleHttp\Client $guzzleClient,
+    private GuzzleHttp\Psr7\HttpFactory $guzzleFactory
   ) {
     if ($this->enabled && self::$jwksCache === null) {
       self::$jwksCache =
@@ -39,15 +40,11 @@ class IAPTokenSubscriber implements EventSubscriberInterface
       }
 
       $this->logger->info("Fetching public keys for {$this->jwksUri}...");
-      $httpClient = new GuzzleHttp\Client();
-
-      // Create an HTTP request factory (can be any PSR-17 compatible HTTP request factory)
-      $httpFactory = new GuzzleHttp\Psr7\HttpFactory();
 
       $this->cachedKeys = new CachedKeySet(
         $jwksUri,
-        $httpClient,
-        $httpFactory,
+        $this->guzzleClient,
+        $this->guzzleFactory,
         self::$jwksCache,
         null, // $expiresAfter int seconds to set the JWKS to expire
         true  // $rateLimit    true to enable rate limit of 10 RPS on lookup of invalid keys
@@ -60,6 +57,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     // If we don't have a jwksUri defined do nothing.
     if (!$this->enabled) {
       $this->logger->warning("IAPTokenSubscriber is disabled.");
+      $event->getRequest()->attributes->set("identity_id", "12345");
       return;
     }
 

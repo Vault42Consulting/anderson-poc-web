@@ -26,3 +26,15 @@ services:
         arguments:
             $enabled: '%env(bool:JWKS_VALIDATION_ENABLED)%'
             $jwksUri: '%env(JWKS_URI)%'
+
+    App\Controller\ApiController:
+        arguments:
+            $contactServiceUrlRoot: '%env(CONTACT_SERVICE_URL_ROOT)%'
+
+    GuzzleHttp\Client:
+        autowire: true
+
+    GuzzleHttp\Psr7\HttpFactory:
+        autowire: true
+
+    
