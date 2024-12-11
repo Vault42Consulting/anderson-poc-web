@@ -5,11 +5,11 @@ export default function Layout() {
     <div className="App">
       <header>
         <nav>
-          <ul>
+          {/* <ul>
             <li>
               <a href="/">Home</a>
             </li>
-          </ul>
+          </ul> */}
         </nav>
       </header>
       <main>

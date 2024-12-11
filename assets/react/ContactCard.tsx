@@ -1,35 +1,52 @@
 // src/App.js
 
-import React, { useEffect, useState } from "react";
-import { fetchContacts } from "./services/contactService";
+import { JSX } from "react";
+import { Link } from "react-router";
 
 type ContactCardProps = {
+  showDetails?: boolean;
   contact: {
     id: string;
     name?: string;
     email?: string;
     phone?: string;
   };
+  linkText?: string | JSX.Element;
+  linkAction?: () => void;
 };
 
-export default function ContactCard(props: ContactCardProps) {
+export default function ContactCard({
+  showDetails = false,
+  linkText,
+  linkAction,
+  contact,
+}: ContactCardProps) {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      {props.contact.name && (
-        <div className="text-gray-800 font-bold text-lg mb-2">
-          {props.contact.name}
+    <Link
+      to="#"
+      onClick={linkAction}
+      className="text-blue-500 hover:text-blue-700 text-end content-center"
+    >
+      <div className="bg-gray-300 p-4 rounded-lg shadow-md flex flex-row">
+        <div className="flex-grow content-center text-left">
+          {contact.name && (
+            <div className="text-gray-800 font-bold text-lg mb-2">
+              {contact.name}
+            </div>
+          )}
+          {showDetails && contact.email && (
+            <div className="text-gray-600 text-base mb-1">
+              Email: {contact.email}
+            </div>
+          )}
+          {showDetails && contact.phone && (
+            <div className="text-gray-600 text-base">
+              Phone: {contact.phone}
+            </div>
+          )}
         </div>
-      )}
-      {props.contact.email && (
-        <div className="text-gray-600 text-base mb-1">
-          Email: {props.contact.email}
-        </div>
-      )}
-      {props.contact.phone && (
-        <div className="text-gray-600 text-base">
-          Phone: {props.contact.phone}
-        </div>
-      )}
-    </div>
+        {linkText}
+      </div>
+    </Link>
   );
 }
