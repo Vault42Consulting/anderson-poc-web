@@ -34,7 +34,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
         new FilesystemAdapter($namespace = 'jwkscache');
     }
     if ($this->enabled) {
-      if ($this->jwksUri == 'undefined') {
+      if ($this->jwksUri === 'undefined') {
         throw new InvalidArgumentException("JWKS_URI must be defined when JWKS_VALIDATION_ENABLED is true");
       }
 
@@ -59,7 +59,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
   {
     // If we don't have a jwksUri defined do nothing.
     if (!$this->enabled) {
-      $this->logger->warning("IAPTokenSubscriber is disabled. Not continuing....");
+      $this->logger->warning("IAPTokenSubscriber is disabled.");
       return;
     }
 

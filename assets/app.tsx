@@ -6,13 +6,16 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import "./bootstrap.js";
 
 import "./styles/app.css";
+import Layout from "./react/Layout";
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<MainPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
