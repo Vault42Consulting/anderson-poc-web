@@ -50,6 +50,7 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
 
     await updateContact(contact);
     updateStoreContact(contact);
+    setEditMode(false);
   };
 
   const saveWithId = save.bind(null, contact.id);

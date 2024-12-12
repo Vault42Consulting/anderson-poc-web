@@ -6,6 +6,7 @@ import ContactCard from "../components/ContactCard";
 import { Link } from "react-router";
 import ContactPage from "../pages/ContactPage";
 import { useContactStore } from "../store/contactStore";
+import CreateContactPage from "./CreateContact";
 
 export default function MainPage() {
   const contacts = useContactStore((state) => state.contacts);
@@ -14,6 +15,8 @@ export default function MainPage() {
   const setCurrentContactId = useContactStore(
     (state) => state.setcurrentContactId
   );
+
+  const [isNewContact, setIsNewContact] = useState(false);
 
   useEffect(() => {
     const fetchDataFromAPI = async () => {
@@ -36,13 +39,14 @@ export default function MainPage() {
       </h1>
 
       <div className="m-10 gap-y-4 flex flex-col">
-        {currentContactId && (
-          <div>
-            <ContactPage contactId={currentContactId} />
-          </div>
+        {isNewContact && (
+          <CreateContactPage setIsNewContact={setIsNewContact} />
         )}
 
-        {currentContactId == null &&
+        {currentContactId && <ContactPage contactId={currentContactId} />}
+
+        {!isNewContact &&
+          currentContactId == null &&
           contacts &&
           contacts.map((contact) => (
             <div key={contact.id}>
@@ -58,6 +62,16 @@ export default function MainPage() {
       </div>
 
       {!contacts && <p>Loading Contacts...</p>}
+
+      {!isNewContact && !currentContactId && (
+        <Link
+          to="#"
+          onClick={() => setIsNewContact(true)}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10"
+        >
+          New Contact
+        </Link>
+      )}
     </div>
   );
 }

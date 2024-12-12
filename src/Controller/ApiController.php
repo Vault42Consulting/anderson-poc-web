@@ -18,7 +18,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     $this->guzzleClient = $guzzleClient;
   }
 
-  #[Route('/api/contacts', name: 'app_api_data')]
+  #[Route('/api/contacts', name: 'app_api_data', methods: ["GET"])]
   public function getData(Request $request): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact";
@@ -44,6 +44,28 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
       $contactData = json_decode($request->getContent(), true);
 
       $response = $this->guzzleClient->request('PUT', $serviceUrl, [
+        'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
+        'json'    => $contactData
+      ]);
+
+      $externalData = json_decode($response->getBody()->getContents(), true);
+
+      return $this->json($externalData);
+    } catch (\Exception $e) {
+      // Handle any exceptions that occur during the request
+      return $this->json(['error'  => $e->getMessage()], 500);
+    }
+  }
+
+  #[Route('/api/contacts', name: 'app_api_post_data', methods: ["POST"])]
+  public function postData(Request $request): Response
+  {
+    $serviceUrl = "$this->contactServiceUrlRoot/contact";
+
+    try {
+      $contactData = json_decode($request->getContent(), true);
+
+      $response = $this->guzzleClient->request('POST', $serviceUrl, [
         'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
         'json'    => $contactData
       ]);

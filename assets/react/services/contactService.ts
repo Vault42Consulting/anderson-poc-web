@@ -31,6 +31,13 @@ export const updateContact = async (
   return { data: response.data };
 };
 
+export const createContact = async (
+  contact: Contact
+): Promise<ApiResponse<Contact>> => {
+  const response: AxiosResponse<Contact> = await apiClient.post("", contact);
+  return { data: response.data };
+};
+
 export const postData = async <T, D>(
   endpoint: string,
   data: D
