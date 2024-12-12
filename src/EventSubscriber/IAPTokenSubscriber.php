@@ -57,6 +57,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     // If we don't have a jwksUri defined do nothing.
     if (!$this->enabled) {
       $this->logger->warning("IAPTokenSubscriber is disabled.");
+      # We will set a testing identity_id in this case of 12345
       $event->getRequest()->attributes->set("identity_id", "12345");
       return;
     }

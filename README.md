@@ -91,4 +91,18 @@ If enabled the following `$request->attributes` will be added automatically by a
 - identity_id (Token `sub` value. GCP recommends using this instead of `x-goog-authenticated-user-id` after you have validated the token. See https://cloud.google.com/iap/docs/signed-headers-howto#retrieving_the_user_identity)
 - identity_email (Token `email` value. GCP recommends using this intead of `x-goog-authenticated-user-email` after you have validated the token. See https://cloud.google.com/iap/docs/signed-headers-howto#retrieving_the_user_identity)
 
+## Microservice Interaction
+
+Currently the symphony server side PHP code acts as a BFF for the internal only microservices.
+All service requests are proxied through the symfony server to ensure that:
+
+- All requests from clients are authenticated via GCP IAP before reaching any of the internal microservices
+- The PHP layer can do additional validation and processing as needed before passing on the request to a microservice
+
+Currently there is only one Microservice proxied which is the Contact microservice. To configure the internal endpoint to that service, use the following environment variable:
+
+```bash
+CONTACT_SERVICE_URL_ROOT="http://localhost:8888"
+```
+
 ## Testing

@@ -18,7 +18,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     $this->guzzleClient = $guzzleClient;
   }
 
-  #[Route('/api/contacts', name: 'app_api_data', methods: ["GET"])]
+  #[Route('/api/contact', name: 'app_api_data', methods: ["GET"])]
   public function getData(Request $request): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact";
@@ -35,7 +35,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     }
   }
 
-  #[Route('/api/contacts/{contact_id}', name: 'app_api_put_data', methods: ['PUT'])]
+  #[Route('/api/contact/{contact_id}', name: 'app_api_put_data', methods: ['PUT'])]
   public function putData(Request $request, string $contact_id): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
@@ -57,7 +57,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     }
   }
 
-  #[Route('/api/contacts/{contact_id}', name: 'app_api_delete_data', methods: ['DELETE'])]
+  #[Route('/api/contact/{contact_id}', name: 'app_api_delete_data', methods: ['DELETE'])]
   public function deleteData(Request $request, string $contact_id): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
@@ -79,7 +79,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     }
   }
 
-  #[Route('/api/contacts', name: 'app_api_post_data', methods: ["POST"])]
+  #[Route('/api/contact', name: 'app_api_post_data', methods: ["POST"])]
   public function postData(Request $request): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact";

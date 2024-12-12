@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { Contact } from "../types/contact";
 
 const apiClient = axios.create({
-  baseURL: "/api/contacts",
+  baseURL: "/api/contact",
   withCredentials: true,
   timeout: 10000,
 });

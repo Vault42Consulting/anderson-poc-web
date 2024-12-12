@@ -8,6 +8,7 @@ import { useFormStatus } from "react-dom";
 import { createContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
 import { Contact } from "../types/contact";
+import { ErrorBoundary } from "react-error-boundary";
 
 type CreateContactPageProps = {
   setIsNewContact: (boolean) => void;
@@ -46,18 +47,26 @@ export default function CreateContactPage({
   };
 
   return (
-    <form action={save}>
-      <ContactForm contact={{}} />
-      <div className="flex flex-row gap-x-3 mt-5">
-        <SubmitButton />
-        <Link
-          to="#"
-          onClick={() => setIsNewContact(false)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Cancel
-        </Link>
-      </div>
-    </form>
+    <ErrorBoundary
+      fallback={
+        <p>
+          There was an error while submitting the form. Please try again later.
+        </p>
+      }
+    >
+      <form action={save}>
+        <ContactForm contact={{}} />
+        <div className="flex flex-row gap-x-3 mt-5">
+          <SubmitButton />
+          <Link
+            to="#"
+            onClick={() => setIsNewContact(false)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Cancel
+          </Link>
+        </div>
+      </form>
+    </ErrorBoundary>
   );
 }
