@@ -6,6 +6,7 @@ import ContactDetail from "../components/ContactDetail";
 import ContactForm from "../components/ContactForm";
 import { useFormStatus } from "react-dom";
 import { updateContact } from "../services/contactService";
+import { deleteContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
 
 type ContactPagedProps = {
@@ -19,6 +20,7 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
     (state) => state.setcurrentContactId
   );
   const updateStoreContact = useContactStore((state) => state.updateContact);
+  const deleteStoreContact = useContactStore((state) => state.deleteContact);
 
   const contact = contacts.find((c) => c.id == contactId);
 
@@ -55,6 +57,19 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
 
   const saveWithId = save.bind(null, contact.id);
 
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this contact?")) {
+      try {
+        await deleteContact(contact.id);
+        deleteStoreContact(contact.id);
+        setCurrentContactId(null);
+      } catch (error) {
+        console.error("Failed to delete contact:", error);
+        // We might want to show an error message to the user here
+      }
+    }
+  };
+
   return (
     <form action={saveWithId}>
       {editMode ? (
@@ -78,6 +93,15 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
         >
           Back to Contact List
         </Link>
+        {!editMode && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Delete
+          </button>
+        )}
       </div>
     </form>
   );
