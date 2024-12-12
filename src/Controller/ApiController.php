@@ -57,7 +57,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     }
   }
 
-  #[Route('/api/contacts/{contact_id}', name: 'app_api_put_data', methods: ['DELETE'])]
+  #[Route('/api/contacts/{contact_id}', name: 'app_api_delete_data', methods: ['DELETE'])]
   public function deleteData(Request $request, string $contact_id): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
