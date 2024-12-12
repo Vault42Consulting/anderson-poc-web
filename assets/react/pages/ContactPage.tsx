@@ -10,6 +10,7 @@ import { deleteContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormProvider, useForm } from "react-hook-form";
+import FallbackRender from "../components/FallbackRender";
 
 type ContactPagedProps = {
   contactId: string;
@@ -27,7 +28,6 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
   const formMethods = useForm();
 
   const onSubmit = formMethods.handleSubmit(async (data) => {
-    console.log(data);
     const contact = {
       id: contactId,
       name: data.name as string,
@@ -77,39 +77,45 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
 
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={(e) => e.preventDefault()} noValidate autoComplete="off">
-        {editMode ? (
-          <ContactForm contact={contact} />
-        ) : (
-          <ContactDetail contact={contact} />
-        )}
-        <div className="flex flex-row gap-x-3 mt-5">
-          <Link
-            to="#"
-            onClick={() => setEditMode(!editMode)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            {editMode ? "Cancel" : "Edit"}
-          </Link>
-          {editMode && <SubmitButton />}
-          <Link
-            to="#"
-            onClick={() => setCurrentContactId(null)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Back to Contact List
-          </Link>
-          {!editMode && (
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Delete
-            </button>
+      <ErrorBoundary fallbackRender={FallbackRender}>
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          noValidate
+          autoComplete="off"
+        >
+          {editMode ? (
+            <ContactForm contact={contact} />
+          ) : (
+            <ContactDetail contact={contact} />
           )}
-        </div>
-      </form>
+          <div className="flex flex-row gap-x-3 mt-5">
+            <Link
+              to="#"
+              onClick={() => setEditMode(!editMode)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              {editMode ? "Cancel" : "Edit"}
+            </Link>
+            {editMode && <SubmitButton />}
+            <Link
+              to="#"
+              onClick={() => setCurrentContactId(null)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Back to Contact List
+            </Link>
+            {!editMode && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        </form>
+      </ErrorBoundary>
     </FormProvider>
   );
 }

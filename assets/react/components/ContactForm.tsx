@@ -11,8 +11,6 @@ export default function ContactForm({ contact }: ContactFormProps) {
     formState: { errors },
   } = useFormContext();
 
-  console.log(errors);
-
   const InputError = (props) => {
     return (
       <div className="text-red-600">
