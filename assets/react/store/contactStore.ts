@@ -18,9 +18,9 @@ export const useContactStore = create<State>((set) => ({
   },
   updateContact(contact) {
     set((state) => ({
-      contacts: state.contacts.map((c) =>
-        c.id === contact.id ? { ...contact } : c
-      ),
+      contacts: !state.contacts.find((c) => c.id == contact.id)
+        ? [...state.contacts, contact]
+        : state.contacts.map((c) => (c.id === contact.id ? { ...contact } : c)),
     }));
   },
 }));
