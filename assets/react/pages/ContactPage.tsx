@@ -14,13 +14,13 @@ type ContactPagedProps = {
 };
 
 export default function ContactPage({ contactId }: ContactPagedProps) {
-  const contacts = useContactStore((state) => state.contacts);
-  const currentContactId = useContactStore((state) => state.currentContactId);
-  const setCurrentContactId = useContactStore(
-    (state) => state.setcurrentContactId
-  );
-  const updateStoreContact = useContactStore((state) => state.updateContact);
-  const deleteStoreContact = useContactStore((state) => state.deleteContact);
+  const {
+    contacts,
+    currentContactId,
+    setCurrentContactId,
+    updateContact: updateStoreContact,
+    deleteContact: deleteStoreContact,
+  } = useContactStore();
 
   const contact = contacts.find((c) => c.id == contactId);
 
