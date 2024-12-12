@@ -9,12 +9,14 @@ import { useContactStore } from "../store/contactStore";
 import CreateContactPage from "./CreateContact";
 
 export default function MainPage() {
-  const contacts = useContactStore((state) => state.contacts);
-  const setContacts = useContactStore((state) => state.setContacts);
-  const currentContactId = useContactStore((state) => state.currentContactId);
-  const setCurrentContactId = useContactStore(
-    (state) => state.setcurrentContactId
-  );
+  const {
+    contacts,
+    setContacts,
+    currentContactId,
+    setCurrentContactId,
+    updateContact: updateStoreContact,
+    deleteContact: deleteStoreContact,
+  } = useContactStore();
 
   const [isNewContact, setIsNewContact] = useState(false);
 

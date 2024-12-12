@@ -5,7 +5,7 @@ interface State {
   contacts: Contact[];
   setContacts: (contacts: Contact[]) => void;
   currentContactId: string | null;
-  setcurrentContactId: (contactId: string | null) => void;
+  setCurrentContactId: (contactId: string | null) => void;
   updateContact: (contact: Contact) => void;
   deleteContact: (contactId: string) => void;
 }
@@ -14,7 +14,7 @@ export const useContactStore = create<State>((set) => ({
   contacts: [],
   setContacts: (contacts) => set((_) => ({ contacts: contacts })),
   currentContactId: null,
-  setcurrentContactId(contactId) {
+  setCurrentContactId(contactId) {
     set({ currentContactId: contactId });
   },
   updateContact(contact) {

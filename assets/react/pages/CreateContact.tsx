@@ -16,7 +16,7 @@ type CreateContactPageProps = {
 export default function CreateContactPage({
   setIsNewContact,
 }: CreateContactPageProps) {
-  const updateStoreContact = useContactStore((state) => state.updateContact);
+  const { updateContact: updateStoreContact } = useContactStore();
 
   const SubmitButton = () => {
     const { pending } = useFormStatus();
