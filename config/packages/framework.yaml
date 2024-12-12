@@ -10,7 +10,7 @@ framework:
     #fragments: true
 parameters:
     env(JWKS_URI): 'undefined'
-    env(JWKS_VALIDATION_ENABLED): 'false'
+    env(IAP_VALIDATION_ENABLED): 'false'
     
 when@test:
     framework:

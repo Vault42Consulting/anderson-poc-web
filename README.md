@@ -1,25 +1,82 @@
-# Anderson POC web frontend
+# Anderson POC Symfony+React Demo Project
 
-This repo contains the Symfony based front end running. Symfony is exposing an entire reactjs app as well as a backend service proxy.
+Simple symfony front end that exposes a backend for frontend api via PHP and a ReactJS frontend using symfony encore.
 
-## Running
+The backend for frontend API allows the API for the react app to be customized to fit the react app itself in terms of inputs and outputs from the microservices.
 
-`make dev` should setup PHP & composer through asdf for you.
+## Prerequisites
 
-`make encore` will run the Symfony encore server (this is the one that does TS transpiling and minification)
+- [asdf](https://asdf-vm.com/) for version management
+- The following packages (or similar packages) are required for ASDF to build PHP 8.4: `build-essential autoconf automake pkgconf re2c libbz2-dev libcurl4-openssl-dev libxml2-dev libpng-dev libjpeg-dev libssl-dev libzip-dev libmcrypt-dev libreadline-dev libonig-dev libsodium-dev bison libsqlite3-dev libfreetype-dev libsystemd-dev libwebp-dev libxslt1-dev libkrb5-dev libldap2-dev libgd-dev libpq-dev`
+- Docker and docker compose for building the GCP CloudRun image
+- PHP 8.4
 
-`make symfony` will run the Symfony process.
+## Setup
+
+To setup the dev environment. Make sure you have the PHP8.4 dependency packages installed and run:
+
+```bash
+make dev
+```
 
 ## Development
 
-Try to keep react elements in `assets/react/` as frontend APIs will still be built here using Symfony. This will allow the front end service proxy to validate IAP tokens prior to making any requests to backend services. We are not using [Symfony UX React](https://symfony.com/bundles/ux-react/current/index.html) here as that is much more useful when using a Hybrid model with some twig template pages as well as some react components sprinkled in. In our case, the entire FrontEnd is react so the base template simply outputs the react container root node.
+Simliar to the Stimulus Symfony UX React package recommendations, this project uses Symfony encore with webpack to manage assets and also process CSS.
+Because of this, the application requires 2 processes to run for local development. The symfony server and encore.
 
-## Routing
+Encore transpiles the react code into plain JavaScript and post processes CSS.
+To run Encore, run:
 
-Routing is accomplished using `react-router`. React will happily change the URL client side but if someone refreshes that page if we don't have Symfony routing for it the user will receive 404 ATM.
+```bash
+make encore
+```
+
+Symfony runs the PHP based server which servers out the React root element in the `index.html.twig` and includes the encore `encore_entry_link_tags` and `encore_entry_script_tags` in `base.html.twig`.
+To run Symfony, run:
+
+```bash
+make symfony
+```
+
+The application will be available at http://localhost:8080
+
+Note: All react elements reside within `assets/react/`
+
+## Docker Compose Details
+
+A docker compose file ins included to build the docker image of the solution. The image uses `php8.4-apache` as the base runtime image.
+
+To build the image you can run.
+
+```bash
+make build-docker
+```
+
+The default image name will be `anderson-pos-web`. To build with a different image name+tag you can use the `IMAGE_NAME` variable. This can be useful to push to a private repository like GCP Artifact Repository.
+
+```bash
+IMAGE_NAME=my-custom-image:latest make build-docker
+```
 
 ## Authentication
 
-This project is setup to validate GCP IAP JWT Tokens. Any controllers that require their actions to validate that token must implement `App\Controller\IAPTokenAuthenticatedController` as a tagging mechanism.
+This app is setup to optionally be run with IAP token validation enabled or disabled.
 
-`JWKS_URI` needs to be set and `JWKS_VALIDATION_ENABLED` needs to be truthy to enable it.
+To enable IAP token validation set the following environment variables:
+
+```bash
+IAP_VALIDATION_ENABLED=true
+JWKS_URI=<JWKS url for public keys>
+```
+
+When enabled, the JWT Token will be validated on each request using `firebase/php-jwt`.
+
+Any controller tagged with the `IAPTokenAuthenticatedController` will ensure that the JWT is present and is valid.
+
+If enabled the following `$request->attributes` will be added automatically by a symfony before filter. They will be available for the duration of the request
+
+- identity_jwtToken (The original IAP JWT Token)
+- identity_id (Token `sub` value. GCP recommends using this instead of `x-goog-authenticated-user-id` after you have validated the token. See https://cloud.google.com/iap/docs/signed-headers-howto#retrieving_the_user_identity)
+- identity_email (Token `email` value. GCP recommends using this intead of `x-goog-authenticated-user-email` after you have validated the token. See https://cloud.google.com/iap/docs/signed-headers-howto#retrieving_the_user_identity)
+
+## Testing

@@ -36,7 +36,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     }
     if ($this->enabled) {
       if ($this->jwksUri === 'undefined') {
-        throw new InvalidArgumentException("JWKS_URI must be defined when JWKS_VALIDATION_ENABLED is true");
+        throw new InvalidArgumentException("JWKS_URI must be defined when IAP_VALIDATION_ENABLED is true");
       }
 
       $this->logger->info("Fetching public keys for {$this->jwksUri}...");

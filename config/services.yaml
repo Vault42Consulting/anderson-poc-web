@@ -24,7 +24,7 @@ services:
     # please note that last definitions always *replace* previous ones
     App\EventSubscriber\IAPTokenSubscriber:
         arguments:
-            $enabled: '%env(bool:JWKS_VALIDATION_ENABLED)%'
+            $enabled: '%env(bool:IAP_VALIDATION_ENABLED)%'
             $jwksUri: '%env(JWKS_URI)%'
 
     App\Controller\ApiController:
