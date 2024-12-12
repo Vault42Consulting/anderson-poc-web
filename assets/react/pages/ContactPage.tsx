@@ -9,6 +9,7 @@ import { updateContact } from "../services/contactService";
 import { deleteContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
 import { ErrorBoundary } from "react-error-boundary";
+import { FormProvider, useForm } from "react-hook-form";
 
 type ContactPagedProps = {
   contactId: string;
@@ -23,6 +24,23 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
     deleteContact: deleteStoreContact,
   } = useContactStore();
 
+  const formMethods = useForm();
+
+  const onSubmit = formMethods.handleSubmit(async (data) => {
+    console.log(data);
+    const contact = {
+      id: contactId,
+      name: data.name as string,
+      email: data.email as string,
+      phone: data.phone as string,
+    };
+
+    await updateContact(contact);
+    updateStoreContact(contact);
+    setEditMode(false);
+    formMethods.reset();
+  });
+
   const contact = contacts.find((c) => c.id == contactId);
 
   const [editMode, setEditMode] = useState(false);
@@ -36,27 +54,13 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
       <button
         type="submit"
         disabled={pending}
+        onClick={onSubmit}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         {pending ? "Submitting..." : "Save"}
       </button>
     );
   };
-
-  const save = async (contactId: string, formData: FormData) => {
-    const contact = {
-      id: contactId,
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-    };
-
-    await updateContact(contact);
-    updateStoreContact(contact);
-    setEditMode(false);
-  };
-
-  const saveWithId = save.bind(null, contact.id);
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this contact?")) {
@@ -72,14 +76,8 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
   };
 
   return (
-    <ErrorBoundary
-      fallback={
-        <p>
-          There was an error while submitting the form. Please try again later.
-        </p>
-      }
-    >
-      <form action={saveWithId}>
+    <FormProvider {...formMethods}>
+      <form onSubmit={(e) => e.preventDefault()} noValidate autoComplete="off">
         {editMode ? (
           <ContactForm contact={contact} />
         ) : (
@@ -112,6 +110,6 @@ export default function ContactPage({ contactId }: ContactPagedProps) {
           )}
         </div>
       </form>
-    </ErrorBoundary>
+    </FormProvider>
   );
 }

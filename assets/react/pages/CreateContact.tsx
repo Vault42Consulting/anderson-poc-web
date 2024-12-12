@@ -9,6 +9,7 @@ import { createContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
 import { Contact } from "../types/contact";
 import { ErrorBoundary } from "react-error-boundary";
+import { FormProvider, useForm } from "react-hook-form";
 
 type CreateContactPageProps = {
   setIsNewContact: (boolean) => void;
@@ -20,12 +21,30 @@ export default function CreateContactPage({
   const { setCurrentContactId, updateContact: updateStoreContact } =
     useContactStore();
 
+  const formMethods = useForm();
+
+  const onSubmit = formMethods.handleSubmit(async (data) => {
+    console.log(data);
+    const contact = {
+      name: data.name as string,
+      email: data.email as string,
+      phone: data.phone as string,
+    };
+
+    const response = await createContact(contact);
+    updateStoreContact(response.data);
+    setIsNewContact(false);
+    setCurrentContactId(response.data.id);
+    formMethods.reset();
+  });
+
   const SubmitButton = () => {
     const { pending } = useFormStatus();
     return (
       <button
         type="submit"
         disabled={pending}
+        onClick={onSubmit}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         {pending ? "Submitting..." : "Save"}
@@ -33,28 +52,9 @@ export default function CreateContactPage({
     );
   };
 
-  const save = async (formData: FormData) => {
-    const contact = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-    };
-
-    const response = await createContact(contact);
-    updateStoreContact(response.data);
-    setIsNewContact(false);
-    setCurrentContactId(response.data.id);
-  };
-
   return (
-    <ErrorBoundary
-      fallback={
-        <p>
-          There was an error while submitting the form. Please try again later.
-        </p>
-      }
-    >
-      <form action={save}>
+    <FormProvider {...formMethods}>
+      <form onSubmit={(e) => e.preventDefault()} noValidate autoComplete="off">
         <ContactForm contact={{}} />
         <div className="flex flex-row gap-x-3 mt-5">
           <SubmitButton />
@@ -67,6 +67,6 @@ export default function CreateContactPage({
           </Link>
         </div>
       </form>
-    </ErrorBoundary>
+    </FormProvider>
   );
 }
