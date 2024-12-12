@@ -38,6 +38,13 @@ export const createContact = async (
   return { data: response.data };
 };
 
+export const deleteContact = async (
+  contactId: string
+): Promise<ApiResponse<void>> => {
+  const response: AxiosResponse<void> = await apiClient.delete(`/${contactId}`);
+  return { data: response.data };
+};
+
 export const postData = async <T, D>(
   endpoint: string,
   data: D

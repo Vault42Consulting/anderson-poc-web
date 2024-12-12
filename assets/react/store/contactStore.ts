@@ -7,6 +7,7 @@ interface State {
   currentContactId: string | null;
   setcurrentContactId: (contactId: string | null) => void;
   updateContact: (contact: Contact) => void;
+  deleteContact: (contactId: string) => void;
 }
 
 export const useContactStore = create<State>((set) => ({
@@ -21,6 +22,12 @@ export const useContactStore = create<State>((set) => ({
       contacts: !state.contacts.find((c) => c.id == contact.id)
         ? [...state.contacts, contact]
         : state.contacts.map((c) => (c.id === contact.id ? { ...contact } : c)),
+    }));
+  },
+  deleteContact(contactId) {
+    set((state) => ({
+      contacts: state.contacts.filter((c) => c.id !== contactId),
+      currentContactId: null,
     }));
   },
 }));
