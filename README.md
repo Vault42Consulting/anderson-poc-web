@@ -44,7 +44,7 @@ Note: All react elements reside within `assets/react/`
 
 ## Docker Compose Details
 
-A docker compose file ins included to build the docker image of the solution. The image uses `php8.4-apache` as the base runtime image.
+A docker compose file is included to build the docker image of the solution. The image uses `php8.4-apache` as the base runtime image.
 
 To build the image you can run.
 
@@ -56,6 +56,18 @@ The default image name will be `anderson-pos-web`. To build with a different ima
 
 ```bash
 IMAGE_NAME=my-custom-image:latest make build-docker
+```
+
+If you want to run the image to locally to verify it is you can use.
+
+```bash
+make run-docker
+```
+
+Or if you used a custom image name
+
+```bash
+IMAGE_NAME=my-custom-image:latest make run-docker
 ```
 
 ## Authentication
