@@ -34,4 +34,26 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
       return $this->json(['error'  => $e->getMessage()], 500);
     }
   }
+
+  #[Route('/api/contacts/{contact_id}', name: 'app_api_put_data')]
+  public function putData(Request $request, string $contact_id): Response
+  {
+    $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
+
+    try {
+      $contactData = json_decode($request->getContent(), true);
+
+      $response = $this->guzzleClient->request('PUT', $serviceUrl, [
+        'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
+        'json'    => $contactData
+      ]);
+
+      $externalData = json_decode($response->getBody()->getContents(), true);
+
+      return $this->json($externalData);
+    } catch (\Exception $e) {
+      // Handle any exceptions that occur during the request
+      return $this->json(['error'  => $e->getMessage()], 500);
+    }
+  }
 }

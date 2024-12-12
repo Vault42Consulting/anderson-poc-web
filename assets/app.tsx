@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import MainPage from "./react/MainPage";
+import MainPage from "./react/pages/MainPage";
 import { BrowserRouter, Routes, Route } from "react-router";
 
 import "./bootstrap.js";
