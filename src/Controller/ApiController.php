@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\Tools\Debug;
+use Exception;
+use Google\Auth\ApplicationDefaultCredentials as AuthApplicationDefaultCredentials;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,13 +12,31 @@ use Symfony\Component\Routing\Annotation\Route;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
+use Google\Auth\ApplicationDefaultCredentials;
+use Google\Cloud\Logging\LoggingClient;
+use Google\Auth\OAuth2;
+
 class ApiController extends AbstractController implements IAPTokenAuthenticatedController
 {
   private $guzzleClient;
+  private $targetAudience = 'anderson-poc-backend-service';
+
 
   public function __construct(Client $guzzleClient, private string $contactServiceUrlRoot, private LoggerInterface $logger)
   {
     $this->guzzleClient = $guzzleClient;
+  }
+
+  private function GetAuthHeaders(Request $request): array
+  {
+    $credentials = ApplicationDefaultCredentials::getIDTokenCredentials($this->targetAudience);
+    $token = $credentials->fetchAuthToken()['id_token'];
+
+    $headers = [
+      'X-Serverless-Authorization' => 'Bearer ' . $token,
+      'X-Backend-Service-UserId' => $request->attributes->get('identity_id')
+    ];
+    return $headers;
   }
 
   #[Route('/api/contact', name: 'app_api_data', methods: ["GET"])]
@@ -24,7 +45,9 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
     $serviceUrl = "$this->contactServiceUrlRoot/contact";
 
     try {
-      $response = $this->guzzleClient->request('GET', $serviceUrl, ['headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')]]);
+      $response = $this->guzzleClient->request('GET', $serviceUrl, [
+        'headers' => $this->GetAuthHeaders($request)
+      ]);
 
       $externalData = json_decode($response->getBody()->getContents(), true);
 
@@ -44,7 +67,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
       $contactData = json_decode($request->getContent(), true);
 
       $response = $this->guzzleClient->request('PUT', $serviceUrl, [
-        'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
+        'headers' => $this->GetAuthHeaders($request),
         'json'    => $contactData
       ]);
 
@@ -66,7 +89,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
       $contactData = json_decode($request->getContent(), true);
 
       $response = $this->guzzleClient->request('DELETE', $serviceUrl, [
-        'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
+        'headers' => $this->GetAuthHeaders($request),
         'json'    => $contactData
       ]);
 
@@ -88,7 +111,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
       $contactData = json_decode($request->getContent(), true);
 
       $response = $this->guzzleClient->request('POST', $serviceUrl, [
-        'headers' => ['X-Goog-Authenticated-User-Id' => $request->attributes->get('identity_id')],
+        'headers' => $this->GetAuthHeaders($request),
         'json'    => $contactData
       ]);
 
