@@ -11,6 +11,7 @@ export default function MainPage() {
     useContactStore();
 
   const [isNewContact, setIsNewContact] = useState(false);
+  const [contactsLoaded, setContactsLoaded] = useState(false);
 
   useEffect(() => {
     const fetchDataFromAPI = async () => {
@@ -18,6 +19,7 @@ export default function MainPage() {
         const response = await fetchContacts();
 
         setContacts(response.data);
+        setContactsLoaded(true);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
@@ -52,10 +54,16 @@ export default function MainPage() {
             </div>
           ))}
 
-        {contacts && contacts.length == 0 && !isNewContact && (
-          <p className="text-center">No contacts found. Add a contact below.</p>
-        )}
-        {!contacts && <p className="text-center">Loading Contacts...</p>}
+        {contacts &&
+          contactsLoaded &&
+          contacts.length == 0 &&
+          !isNewContact && (
+            <p className="text-center">
+              No contacts found. Add a contact below.
+            </p>
+          )}
+
+        {!contactsLoaded && <p className="text-center">Loading Contacts...</p>}
       </div>
 
       {!isNewContact && !currentContactId && (
