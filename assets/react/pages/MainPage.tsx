@@ -30,7 +30,7 @@ export default function MainPage() {
     <div>
       <h1 className="font-bold text-xl text-center">Simple contact list</h1>
 
-      <div className="m-10 gap-y-4 flex flex-col">
+      <div className="m-5 gap-y-4 flex flex-col">
         {isNewContact && (
           <CreateContactPage setIsNewContact={setIsNewContact} />
         )}
@@ -62,7 +62,7 @@ export default function MainPage() {
         <Link
           to="#"
           onClick={() => setIsNewContact(true)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-5"
         >
           New Contact
         </Link>

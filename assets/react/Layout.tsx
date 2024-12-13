@@ -13,7 +13,7 @@ export default function Layout() {
         </nav>
       </header>
       <main>
-        <div className="bg-gray-400 rounded-lg p-10 ml-20 mr-20 mt-10 mb-10">
+        <div className="bg-gray-400 rounded-lg p-5 ml-10 mr-10 mt-5 mb-5">
           <Outlet />
         </div>
       </main>

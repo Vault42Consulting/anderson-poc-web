@@ -23,7 +23,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
 
   private function GetAuthHeaders(Request $request): array
   {
-    if ($request->attributes->get('identity_jwtToken' !== null)) {
+    if ($request->attributes->get('identity_jwtToken') !== null) {
       $credentials = ApplicationDefaultCredentials::getIDTokenCredentials($this->targetAudience);
       $token = $credentials->fetchAuthToken()['id_token'];
 
