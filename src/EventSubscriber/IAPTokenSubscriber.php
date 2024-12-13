@@ -1,6 +1,5 @@
 <?php
 
-// src/EventSubscriber/TokenSubscriber.php
 namespace App\EventSubscriber;
 
 use App\Controller\IAPTokenAuthenticatedController;
@@ -26,6 +25,7 @@ class IAPTokenSubscriber implements EventSubscriberInterface
   public function __construct(
     private string $jwksUri,
     private bool $enabled,
+    private string $defaultId,
     private LoggerInterface $logger,
     private GuzzleHttp\Client $guzzleClient,
     private GuzzleHttp\Psr7\HttpFactory $guzzleFactory
@@ -57,8 +57,8 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     // If we don't have a jwksUri defined do nothing.
     if (!$this->enabled) {
       $this->logger->warning("IAPTokenSubscriber is disabled.");
-      # We will set a testing identity_id in this case of 12345
-      $event->getRequest()->attributes->set("identity_id", "12345");
+      # We will set a testing identity_id in this case of IAP_DEFAULT_ID (which itself defaults to 12345 if not set)
+      $event->getRequest()->attributes->set("identity_id", $this->defaultId);
       return;
     }
 

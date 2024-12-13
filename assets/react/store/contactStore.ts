@@ -10,9 +10,13 @@ interface State {
   deleteContact: (contactId: string) => void;
 }
 
+function sortContacts(contacts: Contact[]) {
+  return contacts.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export const useContactStore = create<State>((set) => ({
   contacts: [],
-  setContacts: (contacts) => set((_) => ({ contacts: contacts })),
+  setContacts: (contacts) => set((_) => ({ contacts: sortContacts(contacts) })),
   currentContactId: null,
   setCurrentContactId(contactId) {
     set({ currentContactId: contactId });
@@ -20,13 +24,17 @@ export const useContactStore = create<State>((set) => ({
   updateContact(contact) {
     set((state) => ({
       contacts: !state.contacts.find((c) => c.id == contact.id)
-        ? [...state.contacts, contact]
-        : state.contacts.map((c) => (c.id === contact.id ? { ...contact } : c)),
+        ? sortContacts([...state.contacts, contact])
+        : sortContacts(
+            state.contacts.map((c) =>
+              c.id === contact.id ? { ...contact } : c
+            )
+          ),
     }));
   },
   deleteContact(contactId) {
     set((state) => ({
-      contacts: state.contacts.filter((c) => c.id !== contactId),
+      contacts: sortContacts(state.contacts.filter((c) => c.id !== contactId)),
       currentContactId: null,
     }));
   },

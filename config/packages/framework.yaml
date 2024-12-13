@@ -11,6 +11,7 @@ framework:
 parameters:
     env(JWKS_URI): 'undefined'
     env(IAP_VALIDATION_ENABLED): 'false'
+    env(IAP_DEFAULT_ID): '12345'
     
 when@test:
     framework:

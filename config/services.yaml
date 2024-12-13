@@ -26,6 +26,7 @@ services:
         arguments:
             $enabled: '%env(bool:IAP_VALIDATION_ENABLED)%'
             $jwksUri: '%env(JWKS_URI)%'
+            $defaultId: '%env(IAP_DEFAULT_ID)%'
 
     App\Controller\ApiController:
         arguments:

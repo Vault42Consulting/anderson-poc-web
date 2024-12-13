@@ -104,5 +104,3 @@ Currently there is only one Microservice proxied which is the Contact microservi
 ```bash
 CONTACT_SERVICE_URL_ROOT="http://localhost:8888"
 ```
-
-## Testing

@@ -13,6 +13,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
+        {/* /* Not really using routes but showing how they could be used. */}
         <Route path="/" element={<Layout />}>
           <Route index element={<MainPage />} />
         </Route>

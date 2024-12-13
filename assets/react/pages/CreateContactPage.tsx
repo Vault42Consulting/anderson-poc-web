@@ -1,13 +1,8 @@
-// src/App.js
-
 import { Link } from "react-router";
-import { useState, useEffect } from "react";
-import ContactDetail from "../components/ContactDetail";
 import ContactForm from "../components/ContactForm";
 import { useFormStatus } from "react-dom";
 import { createContact } from "../services/contactService";
 import { useContactStore } from "../store/contactStore";
-import { Contact } from "../types/contact";
 import { ErrorBoundary } from "react-error-boundary";
 import { FormProvider, useForm } from "react-hook-form";
 import FallbackRender from "../components/FallbackRender";

@@ -2,19 +2,13 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\Tools\Debug;
-use Exception;
-use Google\Auth\ApplicationDefaultCredentials as AuthApplicationDefaultCredentials;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
-
 use Google\Auth\ApplicationDefaultCredentials;
-use Google\Cloud\Logging\LoggingClient;
-use Google\Auth\OAuth2;
 
 class ApiController extends AbstractController implements IAPTokenAuthenticatedController
 {
@@ -29,18 +23,25 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
 
   private function GetAuthHeaders(Request $request): array
   {
-    $credentials = ApplicationDefaultCredentials::getIDTokenCredentials($this->targetAudience);
-    $token = $credentials->fetchAuthToken()['id_token'];
+    if ($request->attributes->get('identity_jwtToken' !== null)) {
+      $credentials = ApplicationDefaultCredentials::getIDTokenCredentials($this->targetAudience);
+      $token = $credentials->fetchAuthToken()['id_token'];
 
-    $headers = [
-      'X-Serverless-Authorization' => 'Bearer ' . $token,
-      'X-Backend-Service-UserId' => $request->attributes->get('identity_id')
-    ];
-    return $headers;
+      $headers = [
+        'X-Serverless-Authorization' => 'Bearer ' . $token,
+        'X-Backend-Service-UserId' => $request->attributes->get('identity_id')
+      ];
+      return $headers;
+    } else {
+      $headers = [
+        'X-Backend-Service-UserId' => $request->attributes->get('identity_id')
+      ];
+      return $headers;
+    }
   }
 
   #[Route('/api/contact', name: 'app_api_data', methods: ["GET"])]
-  public function getData(Request $request): Response
+  public function getContacts(Request $request): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact";
 
@@ -59,7 +60,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
   }
 
   #[Route('/api/contact/{contact_id}', name: 'app_api_put_data', methods: ['PUT'])]
-  public function putData(Request $request, string $contact_id): Response
+  public function putContact(Request $request, string $contact_id): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
 
@@ -81,7 +82,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
   }
 
   #[Route('/api/contact/{contact_id}', name: 'app_api_delete_data', methods: ['DELETE'])]
-  public function deleteData(Request $request, string $contact_id): Response
+  public function deleteContact(Request $request, string $contact_id): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact/$contact_id";
 
@@ -103,7 +104,7 @@ class ApiController extends AbstractController implements IAPTokenAuthenticatedC
   }
 
   #[Route('/api/contact', name: 'app_api_post_data', methods: ["POST"])]
-  public function postData(Request $request): Response
+  public function createContact(Request $request): Response
   {
     $serviceUrl = "$this->contactServiceUrlRoot/contact";
 

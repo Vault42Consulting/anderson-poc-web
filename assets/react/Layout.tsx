@@ -13,7 +13,9 @@ export default function Layout() {
         </nav>
       </header>
       <main>
-        <Outlet />
+        <div className="bg-gray-400 rounded-lg p-10 ml-20 mr-20 mt-10 mb-10">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

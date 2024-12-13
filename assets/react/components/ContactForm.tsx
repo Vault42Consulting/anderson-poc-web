@@ -20,8 +20,8 @@ export default function ContactForm({ contact }: ContactFormProps) {
   };
 
   return (
-    <div className="bg-gray-300 p-4 rounded-lg shadow-md flex flex-row">
-      <div className="content-center text-left grid grid-cols-2">
+    <div className="bg-gray-200 p-4 rounded-lg shadow-md flex flex-row">
+      <div className="content-center text-left grid grid-cols-[max-content_1fr] gap-x-4">
         <div className="text-gray-800 font-bold text-lg mb-2">Name:</div>
         <div className="flex flex-col">
           <input
