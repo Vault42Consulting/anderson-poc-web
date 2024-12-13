@@ -28,7 +28,10 @@ export default function ContactForm({ contact }: ContactFormProps) {
             type="text"
             {...register("name", {
               required: "Name is required",
-              pattern: /^[A-Za-z ]+$/i,
+              pattern: {
+                value: /^[A-Za-z -]+$/i,
+                message: "Names can only contain letters, spaces, and dashes",
+              },
             })}
             defaultValue={contact.name}
           />
