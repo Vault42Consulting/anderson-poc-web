@@ -15,12 +15,18 @@ use Psr\Log\LoggerInterface;
 use Firebase\JWT\CachedKeySet;
 use Firebase\JWT\JWT;
 use InvalidArgumentException;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class IAPTokenSubscriber implements EventSubscriberInterface
 {
   private CachedKeySet $cachedKeys;
 
   private static ?FilesystemAdapter $jwksCache = null;
+
+  static function init()
+  {
+    self::$jwksCache = new FilesystemAdapter($namespace = 'jwkscache');
+  }
 
   public function __construct(
     private string $jwksUri,
@@ -30,10 +36,6 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     private GuzzleHttp\Client $guzzleClient,
     private GuzzleHttp\Psr7\HttpFactory $guzzleFactory
   ) {
-    if ($this->enabled && self::$jwksCache === null) {
-      self::$jwksCache =
-        new FilesystemAdapter($namespace = 'jwkscache');
-    }
     if ($this->enabled) {
       if ($this->jwksUri === 'undefined') {
         throw new InvalidArgumentException("JWKS_URI must be defined when IAP_VALIDATION_ENABLED is true");
@@ -92,3 +94,4 @@ class IAPTokenSubscriber implements EventSubscriberInterface
     ];
   }
 }
+IAPTokenSubscriber::init();
